@@ -20,7 +20,7 @@ Allow Flywheel instancing optimization to be enabled when using iris.
 [[dependencies.irisflw]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,1.20)"
+    versionRange="[1.18,1.19)"
     ordering="NONE"
     side="CLIENT"
 
