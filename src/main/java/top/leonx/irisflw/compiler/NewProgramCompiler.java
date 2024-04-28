@@ -7,15 +7,18 @@ import com.jozufozu.flywheel.core.compile.Template;
 import com.jozufozu.flywheel.core.compile.VertexData;
 import com.jozufozu.flywheel.core.shader.WorldProgram;
 import com.jozufozu.flywheel.core.source.FileResolution;
-import net.coderbot.iris.Iris;
-import net.coderbot.iris.gl.blending.AlphaTest;
-import net.coderbot.iris.gl.blending.AlphaTestFunction;
-import net.coderbot.iris.gl.shader.StandardMacros;
-import net.coderbot.iris.pipeline.WorldRenderingPipeline;
-import net.coderbot.iris.pipeline.newshader.NewWorldRenderingPipeline;
-import net.coderbot.iris.shaderpack.*;
-import net.coderbot.iris.shaderpack.loading.ProgramId;
-import net.coderbot.iris.shaderpack.preprocessor.JcppProcessor;
+import net.irisshaders.iris.Iris;
+import net.irisshaders.iris.gl.blending.AlphaTest;
+import net.irisshaders.iris.gl.blending.AlphaTestFunction;
+import net.irisshaders.iris.gl.shader.StandardMacros;
+import net.irisshaders.iris.helpers.StringPair;
+import net.irisshaders.iris.pipeline.IrisRenderingPipeline;
+import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
+import net.irisshaders.iris.shaderpack.loading.ProgramId;
+import net.irisshaders.iris.shaderpack.preprocessor.JcppProcessor;
+import net.irisshaders.iris.shaderpack.programs.ProgramFallbackResolver;
+import net.irisshaders.iris.shaderpack.programs.ProgramSet;
+import net.irisshaders.iris.shaderpack.programs.ProgramSource;
 import top.leonx.irisflw.accessors.NewWorldRenderingPipelineAccessor;
 import top.leonx.irisflw.accessors.ProgramDirectivesAccessor;
 import top.leonx.irisflw.transformer.ShaderPatcherBase;
@@ -27,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class NewProgramCompiler <TP extends ShaderPatcherBase,P extends WorldProgram> extends IrisProgramCompilerBase<P>{
-    private final Map<ProgramSet,ProgramFallbackResolver> resolvers = new HashMap<>();
+    private final Map<ProgramSet, ProgramFallbackResolver> resolvers = new HashMap<>();
     private final Iterable<StringPair> environmentDefines;
     public NewProgramCompiler(GlProgram.Factory<P> factory, Template<? extends VertexData> template, FileResolution header,Class<TP> patcherClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         super(factory, template, header);
@@ -42,7 +45,7 @@ public class NewProgramCompiler <TP extends ShaderPatcherBase,P extends WorldPro
     @Override
     P createIrisShaderProgram(ProgramContext ctx, boolean isShadow) {
         WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
-        if (pipeline instanceof NewWorldRenderingPipeline newPipeline) {
+        if (pipeline instanceof IrisRenderingPipeline newPipeline) {
             ProgramSet programSet = ((NewWorldRenderingPipelineAccessor) newPipeline).getProgramSet();
             Optional<ProgramSource> sourceReferenceOpt = getProgramSourceReference(programSet, isShadow);
             if(sourceReferenceOpt.isEmpty())
